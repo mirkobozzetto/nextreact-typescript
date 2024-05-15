@@ -1,31 +1,53 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error */
 import clsx from "clsx";
+import { ComponentPropsWithoutRef } from "react";
 
-// 🦁 Supprime ce commentaire et définis correctement les types pour ce composant
-type SquareProps = {
-  isWinningSquare: boolean;
-  value: "X" | "O" | null;
+type SquareProps = ComponentPropsWithoutRef<"button"> & {
+  isWinningSquare?: boolean;
 };
 
-const Square = (props: SquareProps) => {
+const Square = ({ children, isWinningSquare, ...props }: SquareProps) => {
   return (
     <button
       className={clsx("square", {
-        "winning-square": props.isWinningSquare,
+        "winning-square": isWinningSquare,
       })}
+      {...props}
     >
-      {props.value}
+      {children}
     </button>
+  );
+};
+
+type SquareValue = "X" | "O" | null;
+
+type BoardProps = {
+  squares: SquareValue[];
+  winningLine: number[];
+  onClick?: (index: number) => void;
+};
+
+const Board = ({ squares, onClick, winningLine }: BoardProps) => {
+  return (
+    <div className="game-board">
+      {/*  */}
+      {squares.map((square, i) => (
+        <Square key={i} isWinningSquare={winningLine.includes(i)}>
+          {square}
+        </Square>
+      ))}
+      {/*  */}
+    </div>
   );
 };
 
 const Game = () => {
   return (
     <div className="game">
-      <Square isWinningSquare={true} value="X" />
-      <Square isWinningSquare={false} value="X" />
-      <Square isWinningSquare={true} value="O" />
+      <Square isWinningSquare={true}>X</Square>
+      <Square isWinningSquare={false}>X</Square>
+      <Square isWinningSquare={true}>O</Square>
     </div>
   );
 };
