@@ -3,17 +3,19 @@
 import clsx from "clsx";
 
 // 🦁 Supprime ce commentaire et définis correctement les types pour ce composant
-type SquareProps = any;
+type SquareProps = {
+  isWinningSquare: boolean;
+  value: "X" | "O" | null;
+};
 
 const Square = (props: SquareProps) => {
-  // 🦁 Remplace ça par les props définies en haut
   return (
     <button
       className={clsx("square", {
-        "winning-square": false, // 🦁 Remplace ça par la prop isWinningSquare
+        "winning-square": props.isWinningSquare,
       })}
     >
-      O {/* 🦁 Remplace ça par la prop children */}
+      {props.value}
     </button>
   );
 };
@@ -21,9 +23,9 @@ const Square = (props: SquareProps) => {
 const Game = () => {
   return (
     <div className="game">
-      <Square isWinningSquare={true}>X</Square>
-      <Square isWinningSquare={false}>X</Square>
-      <Square isWinningSquare={true}>O</Square>
+      <Square isWinningSquare={true} value="X" />
+      <Square isWinningSquare={false} value="X" />
+      <Square isWinningSquare={true} value="O" />
     </div>
   );
 };
