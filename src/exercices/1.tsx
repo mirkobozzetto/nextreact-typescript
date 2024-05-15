@@ -24,30 +24,43 @@ type SquareValue = "X" | "O" | null;
 
 type BoardProps = {
   squares: SquareValue[];
-  winningLine: number[];
+  winningLine?: number[];
   onClick?: (index: number) => void;
 };
 
 const Board = ({ squares, onClick, winningLine }: BoardProps) => {
   return (
     <div className="game-board">
-      {/*  */}
       {squares.map((square, i) => (
-        <Square key={i} isWinningSquare={winningLine.includes(i)}>
+        <Square
+          key={`square-${i}`}
+          onClick={() => onClick?.(i)}
+          isWinningSquare={winningLine.includes(i)}
+        >
           {square}
         </Square>
       ))}
-      {/*  */}
     </div>
   );
 };
 
+const getDefaultSquares = (): SquareValue[] => [
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  "O",
+  null,
+  "X",
+];
+
 const Game = () => {
+  const squares = getDefaultSquares();
   return (
     <div className="game">
-      <Square isWinningSquare={true}>X</Square>
-      <Square isWinningSquare={false}>X</Square>
-      <Square isWinningSquare={true}>O</Square>
+      <Board squares={squares} />
     </div>
   );
 };
