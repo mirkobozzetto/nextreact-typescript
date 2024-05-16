@@ -9,19 +9,40 @@ import {
 
 type GameInfoProps = {
   status: string;
-};
-
-const GameInfo = ({ status }: GameInfoProps) => {
-  return (
-    <div className="game-info">
-      <div>{status}</div>
-    </div>
-  );
+  userNames: UserNames;
 };
 
 type UserNames = {
   X: string | null;
   O: string | null;
+};
+
+type UserNameFormProps = {
+  onUserNamesSubmitted: (userNames: NonNullableUserNames) => void;
+};
+
+type DeepNonNullable<T> = {
+  [P in keyof T]: NonNullable<T[P]>;
+};
+
+type NonNullableUserNames = DeepNonNullable<UserNames>;
+
+const GameInfo = ({ status, userNames }: GameInfoProps) => {
+  return (
+    <div className="game-info">
+      <div className="flex gap-3 center">
+        <span>
+          <b>X</b>:{userNames.X}
+        </span>
+        <span>VS</span>
+        <span>
+          <b>O</b>:{userNames.O}
+        </span>
+      </div>
+      <div>{status}</div>
+      <ol>{/* TODO */}</ol>
+    </div>
+  );
 };
 
 const Game = () => {
@@ -44,14 +65,10 @@ const Game = () => {
 
   return (
     <div className="game">
-      <GameInfo status={status} />
+      <GameInfo status={status} userNames={userNames} />{" "}
       <Board squares={squares} />
     </div>
   );
-};
-
-type UserNameFormProps = {
-  onUserNamesSubmitted: (userNames: { X: string; O: string }) => void;
 };
 
 const UserNameForm = ({ onUserNamesSubmitted }: UserNameFormProps) => {
@@ -76,7 +93,7 @@ const UserNameForm = ({ onUserNamesSubmitted }: UserNameFormProps) => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} className="vertical-stack">
       <label htmlFor="user1">User X</label>
       <input id="user1" ref={userXRef} required minLength={2} />
       <label htmlFor="user2">User O</label>
