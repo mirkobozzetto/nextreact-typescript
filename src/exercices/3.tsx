@@ -1,6 +1,7 @@
 import { FormEvent, useRef, useState } from "react";
 import { Board } from "../lib/tictactoe/Board";
 import { GameInfo } from "../lib/tictactoe/GameInfo";
+import { UserNameForm } from "../lib/tictactoe/UserNamesForm";
 import {
   calculateNextValue,
   calculateStatus,
@@ -14,11 +15,15 @@ type UserNameFormProps = {
   onUserNamesSubmitted: (userNames: NonNullableUserNames) => void;
 };
 
-// 🦁 Créer un hooks `useUserNamesForm` et déplacer toute la logique de notre
-// composant `UserNameForm` dans ce hooks.
+type UseUserNamesFormReturnType = {
+  userXRef: React.RefObject<HTMLInputElement>;
+  userORef: React.RefObject<HTMLInputElement>;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+};
 
-const UserNameForm = ({ onUserNamesSubmitted }: UserNameFormProps) => {
-  // 🦁 Déplace la logique de ce composant dans le hooks `useUserNamesForm`
+const useUserNamesForm = (
+  onUserNamesSubmitted: (userNames: NonNullableUserNames) => void
+): UseUserNamesFormReturnType => {
   const userXRef = useRef<HTMLInputElement>(null);
   const userORef = useRef<HTMLInputElement>(null);
 
@@ -26,12 +31,29 @@ const UserNameForm = ({ onUserNamesSubmitted }: UserNameFormProps) => {
     event.preventDefault();
     const userX = userXRef.current?.value;
     const userO = userORef.current?.value;
+
     if (!userX || !userO) {
+      return;
+    }
+
+    if (userX === userO) {
+      alert("Usernames must be different");
       return;
     }
 
     onUserNamesSubmitted({ X: userX, O: userO });
   };
+
+  return {
+    userXRef,
+    userORef,
+    onSubmit,
+  };
+};
+
+const UserNameForm = ({ onUserNamesSubmitted }: UserNameFormProps) => {
+  const { userXRef, userORef, onSubmit } =
+    useUserNamesForm(onUserNamesSubmitted);
 
   return (
     <form onSubmit={onSubmit} className="vertical-stack">
