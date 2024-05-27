@@ -1,7 +1,7 @@
 import { FormEvent, useRef, useState } from "react";
 import { Board } from "../lib/tictactoe/Board";
 import { GameInfo } from "../lib/tictactoe/GameInfo";
-import { UserNameForm } from "../lib/tictactoe/UserNamesForm";
+// import { UserNameForm } from "../lib/tictactoe/UserNamesForm";
 import {
   calculateNextValue,
   calculateStatus,
