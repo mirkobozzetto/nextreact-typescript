@@ -9,9 +9,7 @@ type User = {
 type UserContextValue = {
   user: User | null;
   disconnect: () => void;
-  // 🦁 Ajoute la fonction connect
   connect: (user: User) => void;
-  // 🦁 Ajoute la fonction update
   update: (user: User) => void;
 };
 
@@ -29,9 +27,16 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
     setUser(null);
   };
 
-  // 🦁 Ajoute la fonction update
-  const update = (user: User) => {
-    setUser(user);
+  const update = (user: Partial<User>) => {
+    setUser((curr) => {
+      if (!curr) {
+        return curr;
+      }
+      return {
+        ...curr,
+        ...user,
+      };
+    });
   };
 
   const values: UserContextValue = {
