@@ -115,7 +115,7 @@ const GameProvider = ({ children }: PropsWithChildren) => {
 const useGame = (): GameContextOutput => {
   const context = useContext(GameContext);
   if (context === null) {
-    throw new Error("useGame must be used within a GameProvider");
+    throw new Error("useGame must be used within in GameContext");
   }
   return context;
 };
