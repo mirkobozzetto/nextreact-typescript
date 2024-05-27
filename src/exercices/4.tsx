@@ -1,4 +1,12 @@
-import { FormEvent, RefObject, useRef, useState } from "react";
+import {
+  createContext,
+  FormEvent,
+  PropsWithChildren,
+  RefObject,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 import { Board } from "../lib/tictactoe/Board";
 import { GameInfo } from "../lib/tictactoe/GameInfo";
 import {
@@ -13,7 +21,7 @@ import {
 type UserNameFormProps = {
   onUserNamesSubmitted: (userNames: NonNullableUserNames) => void;
 };
-
+// aaaaaaaaaaaaaaaaaaah
 type UseUserNamesFormReturnType = {
   userXRef: RefObject<HTMLInputElement>;
   userORef: RefObject<HTMLInputElement>;
@@ -61,7 +69,7 @@ const UserNameForm = ({ onUserNamesSubmitted }: UserNameFormProps) => {
   );
 };
 
-type UseGameReturnType = {
+type GameContextOutput = {
   squares: SquareValue[];
   xUserName: string | null;
   oUserName: string | null;
@@ -71,10 +79,12 @@ type UseGameReturnType = {
 
 // 🦁 Utilise le type ci-dessus pour créer un context qui est par défaut à `null`
 
-// 🦁 Refactor useGame pour qu'il devienne `GameProvider`
+const GameContext = createContext<GameContextOutput | null>(null);
+
+// 🦁 Refactor GameProvider pour qu'il devienne `GameProvider`
 // Il doit prendre en paramètre un children
 // Il doit retourner le contexte créé plus haut avec le children
-const useGame = (): UseGameReturnType => {
+const GameProvider = ({ children }: PropsWithChildren) => {
   const [squares] = useState<SquareValue[]>(() => getDefaultSquares());
   const [userNames, setUserNames] = useState<UserNames>({
     X: "Player X",
@@ -91,17 +101,24 @@ const useGame = (): UseGameReturnType => {
     `${userNames[nextValue]}'s turn (${nextValue})`
   );
 
-  return {
+  const value = {
     squares,
     xUserName,
     oUserName,
     status,
     setUserNames,
   };
+
+  return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 };
 
-// 🦁 Créer la fonction `useGame` qui retourne le contexte créé plus haut et qui vérifie qu'il n'est pas `null`
-// Si c'est le cas, on throw une error
+const useGame = (): GameContextOutput => {
+  const context = useContext(GameContext);
+  if (context === null) {
+    throw new Error("useGame must be used within a GameProvider");
+  }
+  return context;
+};
 
 const Game = () => {
   const { squares, xUserName, oUserName, status, setUserNames } = useGame();
@@ -132,10 +149,11 @@ const Game = () => {
 
 export default function App() {
   return (
-    // 🦁 Wrap notre composant avec le context
     <div>
       <h2>TicTacToe</h2>
-      <Game />
+      <GameProvider>
+        <Game />
+      </GameProvider>
     </div>
   );
 }
