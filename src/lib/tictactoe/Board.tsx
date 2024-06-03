@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { SquareValue } from './helpers';
-import { Square } from './Square';
+import { SquareValue } from "./helpers";
+import { Square } from "./Square";
 
 type BoardProps = {
   squares: SquareValue[];
@@ -9,6 +9,8 @@ type BoardProps = {
 };
 
 export const Board = ({ squares, onClick, winningSquares }: BoardProps) => {
+  console.log("Board rendered", { squares, onClick, winningSquares });
+
   return (
     <div className="game-board">
       {squares.map((square, index) => (
